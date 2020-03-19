@@ -1,10 +1,11 @@
 import pytest
 from selenium import webdriver
 
+from pages.login_page import LoginPage
+
 url = 'https://opensource-demo.orangehrmlive.com/'
 
 
-@pytest.fixture
 def create_driver():
     print("Driver created")
     driver = webdriver.Chrome()
@@ -12,7 +13,13 @@ def create_driver():
     return driver
 
 
-@pytest.fixture
-def close_file(create_driver):
+def close_driver(driver):
     print("Driver closed")
-    create_driver.close()
+    driver.close()
+
+
+@pytest.fixture()
+def login_page():
+    driver = create_driver()
+    yield LoginPage(driver)
+    close_driver(driver)
