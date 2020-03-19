@@ -1,20 +1,28 @@
-import inspect
 import logging
+from temp.logging.custom_logger.custom_logger import custom_logger
 
 
-def custom_logger(log_level):
-    # gets the name of the class/method from where it is called
-    logger_name = inspect.stack()[1][3]
-    logger = logging.getLogger(logger_name)
-    logger.setLevel(logging.DEBUG)
+class LoggingDemo2():
+    log = custom_logger(logging.DEBUG)
 
-    file_handler = logging.FileHandler("{}.log".format(logger_name), mode='w')
-    file_handler.setLevel(log_level)
+    def method1(self):
+        self.log.info("Everything is good!")
+        self.log.warning("Hello")
+        self.log.error("PAhoo")
 
-    formatter = logging.Formatter('%(asctime)s: %(name)s %(levelname)s: %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
+    def method2(self):
+        m2_log = custom_logger(logging.INFO)
+        m2_log.info("Everything is good!")
+        m2_log.warning("Hello")
+        m2_log.error("PAhoo")
 
-    return logger
+    def method3(self):
+        self.log.info("Everything is good!")
+        self.log.warning("Hello")
+        self.log.error("PAhoo")
 
-    # by default, log all messages
+
+ld = LoggingDemo2()
+ld.method1()
+ld.method2()
+ld.method3()
