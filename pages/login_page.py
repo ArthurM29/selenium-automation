@@ -1,14 +1,13 @@
 from selenium.webdriver.common.by import By
 
 from pages.base_page import BasePage
-from pages.dashboard import DashboardComponent
+from pages.dashboard_page import DashboardComponent
 
 
 class LoginPage(BasePage):
-    _name = 'Login Page'
-    _url = 'https://opensource-demo.orangehrmlive.com/'
+    url = 'https://opensource-demo.orangehrmlive.com/'
 
-    # locators
+    # region locators
     _username_input = (By.ID, 'txtUsername')
     _password_input = (By.ID, 'txtPassword')
     _login_button = (By.ID, 'btnLogin')
@@ -17,27 +16,34 @@ class LoginPage(BasePage):
 
     _page_identifier = _login_form
 
-    def enter_username(self, username):
-        self._driver.find_element(*self._username_input).send_keys(username)
+    # endregion
 
-    def enter_password(self, password):
-        self._driver.find_element(*self._password_input).send_keys(password)
+    # region private methods
+    def _enter_username(self, username):
+        self.driver.find_element(*self._username_input).send_keys(username)
 
-    def click_login_button(self):
-        self._driver.find_element(*self._login_button).click()
+    def _enter_password(self, password):
+        self.driver.find_element(*self._password_input).send_keys(password)
 
+    def _click_login_button(self):
+        self.driver.find_element(*self._login_button).click()
+
+    # endregion
+
+    # region public interface
     def login(self, username, password):
-        self.enter_username(username)
-        self.enter_password(password)
-        self.click_login_button()
-        return DashboardComponent(self._driver)
+        self._enter_username(username)
+        self._enter_password(password)
+        self._click_login_button()
+        return DashboardComponent(self.driver)
 
     def invalid_login(self, username, password):
-        self.enter_username(username)
-        self.enter_password(password)
-        self.click_login_button()
+        self._enter_username(username)
+        self._enter_password(password)
+        self._click_login_button()
         return self
 
     def get_invalid_login_error(self):
         """Return error message that is displayed when one of the credentials is empty or invalid"""
-        return self._driver.find_element(*self._invalid_login_error_message).text
+        return self.driver.find_element(*self._invalid_login_error_message).text
+    # endregion

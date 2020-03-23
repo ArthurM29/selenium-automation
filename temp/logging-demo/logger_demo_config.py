@@ -6,7 +6,7 @@ class LoggerDemoConfig:
     def test_log(self):
 
         # create logger
-        logging.config.fileConfig('logging.conf')
+        logging.config.fileConfig('logging-demo.conf')
         logger = logging.getLogger(LoggerDemoConfig.__name__)
 
 
