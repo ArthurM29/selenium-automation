@@ -8,9 +8,38 @@ from pages.header_page import Header
 url = 'https://opensource-demo.orangehrmlive.com/'
 
 
-def create_driver():
+def pytest_addoption(parser):
+    parser.addoption("--browser")
+    parser.addoption("--url")
+    parser.addoption("--headless")
+    parser.addoption("--env")
+
+
+@pytest.fixture(scope="session")
+def browser(request):
+    return request.config.getoption("--browser")
+
+
+# @pytest.fixture(scope="session")
+# def headless(request):
+#     return request.config.getoption("--headless")
+#
+#
+# @pytest.fixture(scope="session")
+# def url(request):
+#     return request.config.getoption("--url")
+#
+# @pytest.fixture(scope="session")
+# def env(request):
+#     return request.config.getoption("--env")
+
+
+def create_driver(browser):
     print("Driver created")
-    driver = webdriver.Chrome()
+    if browser.lower() == 'chrome':
+        driver = webdriver.Chrome()
+    elif browser.lower() == 'firefox':
+        driver = webdriver.Firefox()
     driver.get(url)
     return driver
 
@@ -21,15 +50,15 @@ def close_driver(driver):
 
 
 @pytest.fixture()
-def login_page():
-    driver = create_driver()
+def login_page(browser):
+    driver = create_driver(browser)
     yield LoginPage(driver)
     close_driver(driver)
 
 
 @pytest.fixture()
 def header_page():
-    driver = create_driver()
+    driver = create_driver(browser)
     login_page = LoginPage(driver)
     login_page.login(*get_credentials('valid_credentials'))
     header_page = Header(driver)
@@ -39,7 +68,7 @@ def header_page():
 
 @pytest.fixture()
 def about_modal():
-    driver = create_driver()
+    driver = create_driver(browser)
     login_page = LoginPage(driver)
     login_page.login(*get_credentials('valid_credentials'))
     header_page = Header(driver)
