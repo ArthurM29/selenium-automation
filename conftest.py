@@ -1,87 +1,89 @@
 import pytest
 from selenium import webdriver
 from common.data.credentials import get_credentials
+from common.config.config import Config
 
 from pages.login_page import LoginPage
 from pages.header_page import Header
 
-URL = 'https://opensource-demo.orangehrmlive.com/'
-DEFAULT_BROWSER = 'chrome'
-DEFAULT_ENV = 'qa'
-SUPPORTED_BROWSERS = ['chrome', 'firefox', 'safari', 'ie', 'edge', 'opera']
+CONFIG_PATH = 'common/config/config.yaml'
+
+
+@pytest.fixture(scope="session")
+def config():
+    return Config(CONFIG_PATH)
 
 
 # region command line arguments
 def pytest_addoption(parser):
-    parser.addoption("--browser", type=str.lower, choices=SUPPORTED_BROWSERS, default=DEFAULT_BROWSER,
+    parser.addoption("--browser", type=str.lower,
                      help="one of the supported browsers")
-    parser.addoption("--url", type=str.lower, default=URL, help="website url")
-    parser.addoption("--headless", action='store_true', default=False,
+    parser.addoption("--url", type=str.lower, help="website url")
+    parser.addoption("--headless", action='store_true',
                      help="browser execution mode - return True if passed and False if not")
-    parser.addoption("--env", type=str.lower, default=DEFAULT_ENV, help="environment to run the tests against")
+    parser.addoption("--env", type=str.lower, help="environment to run the tests against")
 
 
 @pytest.fixture(scope="session")
-def browser(request):
-    return request.config.getoption("--browser")
+def browser(request, config):
+    cmd_browser = request.config.getoption("--browser")
+    browser_ = cmd_browser if cmd_browser else config.get('browser').lower()
+    if browser_ in config.get('supported_browsers'):
+        return browser_
+    else:
+        raise Exception(f"'{browser_}' is not a supported browser.")
 
 
 @pytest.fixture(scope="session")
-def headless(request):
-    return request.config.getoption("--headless")
+def headless(request, config):
+    cmd_headless = request.config.getoption("--headless")
+    return cmd_headless if cmd_headless else config.get('headless')
 
 
 @pytest.fixture(scope="session")
-def url(request):
-    return request.config.getoption("--url")
+def url(request, config):
+    cmd_url = request.config.getoption("--url")
+    return cmd_url if cmd_url else config.get('url')
 
 
 @pytest.fixture(scope="session")
-def env(request):
-    return request.config.getoption("--env")
+def env(request, config):
+    cmd_env = request.config.getoption("--env")
+    return cmd_env if cmd_env else config.get('env')
 
 
 # endregion
 
-
-def create_driver(browser):
+@pytest.fixture()
+def driver(browser, url):
     print("Driver created")
-    if browser.lower() == 'chrome':
-        driver = webdriver.Chrome()
-    elif browser.lower() == 'firefox':
-        driver = webdriver.Firefox()
-    driver.get(URL)
-    return driver
-
-
-def close_driver(driver):
+    if browser == 'chrome':
+        driver_ = webdriver.Chrome()
+    elif browser == 'firefox':
+        driver_ = webdriver.Firefox()
+    driver_.get(url)
+    yield driver_
     print("Driver closed")
-    driver.close()
+    driver_.close()
 
 
 @pytest.fixture()
-def login_page(browser):
-    driver = create_driver(browser)
-    yield LoginPage(driver)
-    close_driver(driver)
+def login_page(driver):
+    return LoginPage(driver)
 
 
 @pytest.fixture()
-def header_page():
-    driver = create_driver(browser)
+def header_page(driver):
     login_page = LoginPage(driver)
     login_page.login(*get_credentials('valid_credentials'))
     header_page = Header(driver)
-    yield header_page
-    close_driver(driver)
+    return header_page
 
 
 @pytest.fixture()
-def about_modal():
-    driver = create_driver(browser)
+def about_modal(driver):
     login_page = LoginPage(driver)
     login_page.login(*get_credentials('valid_credentials'))
     header_page = Header(driver)
     about_modal = header_page.open_about_modal()
-    yield about_modal
-    close_driver(driver)
+    return about_modal
