@@ -61,6 +61,8 @@ def driver(browser, url):
         driver_ = webdriver.Chrome()
     elif browser == 'firefox':
         driver_ = webdriver.Firefox()
+    elif browser == 'safari':
+        driver_ = webdriver.Safari()
     driver_.get(url)
     yield driver_
     print("Driver closed")
