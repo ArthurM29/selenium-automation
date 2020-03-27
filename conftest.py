@@ -9,6 +9,8 @@ from common.config.config import Config
 
 from pages.login_page import LoginPage
 from pages.header_page import Header
+from datetime import datetime
+from py.xml import html
 
 CONFIG_PATH = 'common/config/config.yaml'
 RESULTS_DIR = 'results'
@@ -88,6 +90,25 @@ def _create_results_dir():
     Path(os.path.join(RESULTS_DIR, SCREENSHOTS_DIR)).mkdir(parents=True, exist_ok=True)
 
 
+def _reorder_columns(cells):
+    new_order = {2: 'Test', 3: 'Description', 0: 'Result', 4: 'Duration', 1: 'Time'}
+    cells[:] = [cells[i] for i in list(new_order.keys())]
+
+
+def pytest_html_results_table_header(cells):
+    cells.insert(2, html.th('Description', class_='sortable time'))
+    cells.insert(1, html.th('Time', class_='sortable time', col='time'))
+    cells.pop()  # remove links column
+    _reorder_columns(cells)
+
+
+def pytest_html_results_table_row(report, cells):
+    cells.insert(2, html.td(report.description))
+    cells.insert(1, html.td(datetime.utcnow(), class_='col-time'))
+    cells.pop()
+    _reorder_columns(cells)
+
+
 @pytest.mark.hookwrapper
 def pytest_runtest_makereport(item):
     """
@@ -100,7 +121,13 @@ def pytest_runtest_makereport(item):
     report = outcome.get_result()
     extra = getattr(report, 'extra', [])
 
+    desc, = item.own_markers[0].args
+    report.description = desc
+
     if report.when == 'call' or report.when == "setup":
+
+        extra.append(pytest_html.extras.text('FRIEND JAN'))
+
         xfail = hasattr(report, 'wasxfail')
         if (report.skipped and xfail) or (report.failed and not xfail):
             file_path_in_report = os.path.join(SCREENSHOTS_DIR, f"{report.head_line.replace('.', '-')}.png")

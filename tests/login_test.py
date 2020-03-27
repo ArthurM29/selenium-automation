@@ -2,13 +2,16 @@ from pytest import mark as m
 from common.data.credentials import get_credentials
 
 
+# pytest --it tests/login_test.py --html=results/report.html --headless --browser=firefox
+
+
 @m.describe("Login")
 class TestLogin:
 
     @m.it("Verify able to login with valid credentials")
     def test_valid_login(self, login_page):
         dashboard = login_page.login(*get_credentials(('valid_credentials')))
-        assert dashboard.get_title() == 'Dahboard'
+        assert dashboard.get_title() == 'Dashboard'
 
     @m.it("Verify error message is displayed if trying to login with empty username")
     def test_login_with_empty_username(self, login_page):
