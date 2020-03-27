@@ -1,5 +1,7 @@
 import pytest
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from common.data.credentials import get_credentials
 from common.config.config import Config
 
@@ -55,18 +57,25 @@ def env(request, config):
 # endregion
 
 @pytest.fixture()
-def driver(browser, url):
-    print("Driver created")
+def driver(browser, url, headless, config):
     if browser == 'chrome':
-        driver_ = webdriver.Chrome()
+        options = ChromeOptions()
+        options.headless = True if headless else False
+        driver_ = webdriver.Chrome(options=options)
     elif browser == 'firefox':
-        driver_ = webdriver.Firefox()
+        options = FirefoxOptions()
+        options.headless = True if headless else False
+        driver_ = webdriver.Firefox(options=options)
     elif browser == 'safari':
         driver_ = webdriver.Safari()
     driver_.get(url)
+    driver_.set_window_size(*config.get('screen_size'))
+    print("Driver created")
+
     yield driver_
-    print("Driver closed")
+
     driver_.close()
+    print("Driver closed")
 
 
 @pytest.fixture()

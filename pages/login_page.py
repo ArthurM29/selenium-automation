@@ -1,5 +1,6 @@
 from selenium.webdriver.common.by import By
 
+from common import selenium_lib
 from pages.base_page import BasePage
 from pages.dashboard_page import DashboardComponent
 
@@ -26,7 +27,9 @@ class LoginPage(BasePage):
         self.driver.find_element(*self._password_input).send_keys(password)
 
     def _click_login_button(self):
-        self.driver.find_element(*self._login_button).click()
+        login_button = self.driver.find_element(*self._login_button)
+        selenium_lib.click_with_JS(self.driver, login_button)
+
 
     # endregion
 
