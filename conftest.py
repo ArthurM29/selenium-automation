@@ -86,6 +86,7 @@ def driver(browser, url, headless, config):
 
 
 # region html report
+# source: http://www.automationtesting.co.in/2017/02/pytest-with-selenium-html-report-with.html
 def _create_results_dir():
     Path(os.path.join(RESULTS_DIR, SCREENSHOTS_DIR)).mkdir(parents=True, exist_ok=True)
 
