@@ -3,10 +3,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-def click_with_JS(driver, element):
-    driver.execute_script("arguments[0].click();", element)
-
-
 class element_attribute_contains_value(object):
     def __init__(self, locator, attribute, value):
         self.locator = locator
@@ -15,7 +11,7 @@ class element_attribute_contains_value(object):
 
     def __call__(self, driver):
         try:
-            element_attribute = EC._find_element(driver, self.locator).get_attribute(self.attribute)
+            element_attribute = EC._find_element(driver, self.locator).get_element_attribute(self.attribute)
             if element_attribute:
                 return self.value in element_attribute
             else:

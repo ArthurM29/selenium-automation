@@ -1,8 +1,7 @@
 from selenium.webdriver.common.by import By
 
-from common import selenium_lib
 from pages.base_page import BasePage
-from pages.dashboard_page import DashboardComponent
+from pages.dashboard_page import DashboardPage
 
 
 class LoginPage(BasePage):
@@ -21,15 +20,13 @@ class LoginPage(BasePage):
 
     # region private methods
     def _enter_username(self, username):
-        self.driver.find_element(*self._username_input).send_keys(username)
+        self.enter_text(self._username_input, username)
 
     def _enter_password(self, password):
-        self.driver.find_element(*self._password_input).send_keys(password)
+        self.enter_text(self._password_input, password)
 
     def _click_login_button(self):
-        login_button = self.driver.find_element(*self._login_button)
-        selenium_lib.click_with_JS(self.driver, login_button)
-
+        self.click_element_with_JS(self._login_button)
 
     # endregion
 
@@ -38,7 +35,7 @@ class LoginPage(BasePage):
         self._enter_username(username)
         self._enter_password(password)
         self._click_login_button()
-        return DashboardComponent(self.driver)
+        return DashboardPage(self.driver)
 
     def invalid_login(self, username, password):
         self._enter_username(username)
@@ -48,5 +45,5 @@ class LoginPage(BasePage):
 
     def get_invalid_login_error(self):
         """Return error message that is displayed when one of the credentials is empty or invalid"""
-        return self.driver.find_element(*self._invalid_login_error_message).text
+        return self.get_text(self._invalid_login_error_message)
     # endregion

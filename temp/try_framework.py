@@ -5,44 +5,27 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
+
+from pages.base_page import BasePage
+from pages.dashboard_page import DashboardPage
 from pages.login_page import LoginPage
 from pages.header_page import Header
 
 driver = webdriver.Chrome()
 driver.get("https://opensource-demo.orangehrmlive.com/")
 
-
-
 # result = WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, 'txtUsername')))
+# print()
 
-
-login_page = LoginPage(driver)
-dashboard = login_page.login('Admin', 'admin123')
-driver = dashboard.driver
+# login_page = LoginPage(driver)
+# dashboard = login_page.login('Admin', 'admin123')
+# driver = dashboard.driver
 
 # time.sleep(1)
 
 # wait = WebDriverWait(driver, 10)
 #
 # wait.until(element_attribute_contains_value((By.TAG_NAME, 'body'), 'cz-shortcut-listen', 'true'))
-
-
-
-def click_with_JS(driver, element):
-    driver.execute_script("arguments[0].click();", element)
-
-element = driver.find_element(By.CSS_SELECTOR, '#branding img')
-click_with_JS(driver, element)
-
-def get_tab_by_title(driver, title):
-    for handle in driver.window_handles:
-        driver.switch_to.window(title)
-        if driver.title == title:
-            return handle
-    raise ValueError(f"No tab found with title {title}")
-
-tab_handle = get_tab_by_title('HR Management System | HR Management Software | OrangeHRM')
-
 
 
 # driver.switch_to.window(driver.window_handles[1])
@@ -62,4 +45,23 @@ tab_handle = get_tab_by_title('HR Management System | HR Management Software | O
 # _wait_until(assign_link_xpath, EC.visibility_of_element_located).click()
 # _wait_until_displayed(assign_link_xpath).click()
 
-# driver.close()
+
+login_page = LoginPage(driver)
+login_page._enter_username('Admin')
+login_page._enter_password('admin123')
+login_page._click_login_button()
+
+admin_tab = (By.ID, 'menu_admin_viewAdminModule')
+
+dashboard_page = DashboardPage(login_page.driver)
+dashboard_page.get_element(admin_tab, wait=5).click_element()
+
+username_search_field = (By.ID, 'searchSystemUser_userName')
+
+value = dashboard_page.get_element_value(username_search_field, wait=5)
+print(value)
+
+dashboard_page.enter_text(username_search_field, 'bablo')
+value = dashboard_page.get_element_value(username_search_field)
+print(value)
+driver.close()

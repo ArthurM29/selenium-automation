@@ -19,13 +19,9 @@ class AboutPage(BasePage):
 
     # region public interface
     def get_title(self):
-        return self.driver.find_element(*self._title).text
+        return self.get_text(self._title)
 
     def close(self):
-        self.driver.find_element(*self._close_icon).click()
-
-    def close(self):
-        self.driver.find_element(*self._close_icon).click()
-
+        self.click_element(self._close_icon)
 
     # endregion

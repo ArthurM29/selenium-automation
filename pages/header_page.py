@@ -19,24 +19,22 @@ class Header(BasePage):
 
     # region private methods
     def _click_on_about_link(self):
-        about_link = self._wait_until_displayed(self._welcome_menu_about_link)
-        selenium_lib.click_with_JS(self.driver, about_link)
+        self.click_element_with_JS(self._welcome_menu_about_link, self._element_wait_timeout)
 
     def _click_on_logout_link(self):
-        logout_link = self._wait_until_displayed(self._welcome_menu_logout_link)
-        selenium_lib.click_with_JS(self.driver, logout_link)
+        self.click_element_with_JS(self._welcome_menu_logout_link, wait=self._element_wait_timeout)
 
     # endregion
 
+    # region public interface
     def is_logo_displayed(self):
-        return self._is_displayed(self._logo_image)
+        return self._is_element_displayed(self._logo_image)
 
     def get_welcome_text(self):
-        return self.driver.find_element(*self._welcome_link).text
+        return self.get_text(self._welcome_link)
 
     def open_welcome_menu(self):
-        welcome_link = self.driver.find_element(*self._welcome_link)
-        selenium_lib.click_with_JS(self.driver, welcome_link)
+        self.click_element_with_JS(self._welcome_link)
         self._wait_until_displayed(self._welcome_menu)
         return self
 
@@ -49,10 +47,8 @@ class Header(BasePage):
         return AboutPage(self.driver)
 
     def click_on_logo(self):
-        logo = self.driver.find_element(*self._logo_image)
-        selenium_lib.click_with_JS(self.driver, logo)
-
-        # switch to new tab
-        new_opened_tab_handle = self.driver.window_handles[1]
-        self.driver.switch_to.window(new_opened_tab_handle)
+        self.click_element_with_JS(self._logo_image)
+        self.switch_to_new_tab()
         return OrangeHRMPRODPage(self.driver)
+
+    # endregion

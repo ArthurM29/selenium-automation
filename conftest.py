@@ -64,7 +64,7 @@ def env(request, config):
 
 @pytest.fixture()
 def driver(browser, url, headless, config):
-    global driver_  # declare global to access from _capture_screenshot() function
+    global driver_  # declare global to access from _capture_screenshot() function, no better way to pass driver to pytest_runtest_makereport()
     if browser == 'chrome':
         options = ChromeOptions()
         options.headless = True if headless else False
@@ -77,12 +77,12 @@ def driver(browser, url, headless, config):
         driver_ = webdriver.Safari()
     driver_.get(url)
     driver_.set_window_size(*config.get('screen_size'))
-    print("Driver created")
+    # print("Driver created")
 
     yield driver_
 
     driver_.close()
-    print("Driver closed")
+    # print("Driver closed")
 
 
 # region html report

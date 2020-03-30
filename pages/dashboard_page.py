@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 
 
-class DashboardComponent(BasePage):
+class DashboardPage(BasePage):
     # region locators
     _header_title_div = (By.CSS_SELECTOR, 'div.head')
 
@@ -12,6 +12,6 @@ class DashboardComponent(BasePage):
 
     # region public interface
     def get_title(self):
-        return self.driver.find_element(*self._header_title_div).text
+        return self.get_text(self._header_title_div)
 
     # endregion

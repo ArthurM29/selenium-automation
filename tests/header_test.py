@@ -35,14 +35,10 @@ class TestHeader:
     def test_about_modal_title(self, about_modal):
         assert about_modal.get_title() == 'About'
 
+    @m.describe("About modal")
     @m.it("Verify able to close modal with close icon")
     def test_close_icon(self, about_modal):
         about_modal.close()
         assert about_modal.is_not_loaded()
 
-    @m.it("Verify section labels")
-    def test_close_icon(self, about_modal):
-        about_modal.close()
-        assert about_modal.is_not_loaded()
-
-    #TODO add more tests
+    # TODO add more tests
