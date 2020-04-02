@@ -2,12 +2,14 @@ import yaml
 
 
 class Config:
-    def __init__(self, file_path):
-        with open(file_path, 'r') as yaml_file:
+    CONFIG_PATH = 'common/config/config.yaml'
+
+    def __init__(self):
+        with open(self.CONFIG_PATH, 'r') as yaml_file:
             try:
                 self.configs = yaml.safe_load(yaml_file)
             except yaml.YAMLError as e:
-                raise Exception(f"Failed to parse '{file_path}'") from e
+                raise Exception(f"Failed to parse '{self.CONFIG_PATH}'") from e
 
     def get(self, key):
         key = key.lower()

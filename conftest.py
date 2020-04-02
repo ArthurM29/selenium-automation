@@ -3,23 +3,26 @@ import os
 from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from common.data.credentials import get_credentials
 from common.config.config import Config
+from pages.admin.user_management_page import UserManagementPage
+from pages.menu.firstlevelmenu import FirstLevelMenu
 
 from pages.login_page import LoginPage
 from pages.header_page import Header
 from datetime import datetime
 from py.xml import html
 
-CONFIG_PATH = 'common/config/config.yaml'
+
 RESULTS_DIR = 'results'
 SCREENSHOTS_DIR = 'screenshots'
 
 
 @pytest.fixture(scope="session")
 def config():
-    return Config(CONFIG_PATH)
+    return Config()
 
 
 # region command line arguments
@@ -147,7 +150,7 @@ def _capture_screenshot(name):
 
 # endregion
 
-
+# region page fixtures
 @pytest.fixture()
 def login_page(driver):
     return LoginPage(driver)
@@ -168,3 +171,17 @@ def about_modal(driver):
     header_page = Header(driver)
     about_modal = header_page.open_about_modal()
     return about_modal
+
+
+@pytest.fixture()
+def user_management(driver, header_page):
+    #TODO replace with proper page objects for menu navigation
+    menu = FirstLevelMenu(header_page.driver)
+    menu.select_menu_item('Admin')
+    menu.click_element((By.ID, 'menu_admin_UserManagement'))
+
+    user_management_page = UserManagementPage(menu.driver)
+
+    return user_management_page
+
+# endregion

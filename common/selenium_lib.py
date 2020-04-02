@@ -1,9 +1,13 @@
 from selenium.common.exceptions import StaleElementReferenceException
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
 class element_attribute_contains_value(object):
+    """ An expectation for checking if the given value is present in the
+    specified element attribute.
+    locator, attribute, value
+    """
+
     def __init__(self, locator, attribute, value):
         self.locator = locator
         self.attribute = attribute
@@ -11,7 +15,7 @@ class element_attribute_contains_value(object):
 
     def __call__(self, driver):
         try:
-            element_attribute = EC._find_element(driver, self.locator).get_element_attribute(self.attribute)
+            element_attribute = EC._find_element(driver, self.locator).get_attribute(self.attribute)
             if element_attribute:
                 return self.value in element_attribute
             else:
@@ -19,22 +23,10 @@ class element_attribute_contains_value(object):
         except StaleElementReferenceException:
             return False
 
-# class text_to_be_present_in_element_value(object):
-#     """
-#     An expectation for checking if the given text is present in the element's
-#     locator, text
-#     """
-#     def __init__(self, locator, text_):
-#         self.locator = locator
-#         self.text = text_
-#
-#     def __call__(self, driver):
-#         try:
-#             element_text = _find_element(driver,
-#                                          self.locator).get_attribute("value")
-#             if element_text:
-#                 return self.text in element_text
-#             else:
-#                 return False
-#         except StaleElementReferenceException:
-#                 return False
+
+class document_has_ready_state(object):
+    """ An expectation for checking if the web page document.readyState is complete """
+
+    def __call__(self, driver):
+        page_state = driver.execute_script('return document.readyState;')
+        return page_state == 'complete'

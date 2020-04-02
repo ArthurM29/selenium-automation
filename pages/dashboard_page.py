@@ -6,7 +6,7 @@ class DashboardPage(BasePage):
     # region locators
     _header_title_div = (By.CSS_SELECTOR, 'div.head')
 
-    _page_identifier = _header_title_div
+    _page_identifier_element = _header_title_div
 
     # endregion
 

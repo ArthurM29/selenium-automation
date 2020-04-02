@@ -1,5 +1,4 @@
 from selenium.webdriver.common.by import By
-from common import selenium_lib
 from pages.about_page import AboutPage
 from pages.base_page import BasePage
 from pages.login_page import LoginPage
@@ -7,22 +6,25 @@ from pages.orange_hrm_prod_page import OrangeHRMPRODPage
 
 
 class Header(BasePage):
+    """Page object describes top header section with logo, Marketplace button and welcome menu"""
+
     # region locators
     _logo_image = (By.CSS_SELECTOR, '#branding img')
     _welcome_link = (By.ID, 'welcome')
     _welcome_menu = (By.ID, 'welcome-menu')
     _welcome_menu_about_link = (By.ID, 'aboutDisplayLink')
     _welcome_menu_logout_link = (By.LINK_TEXT, 'Logout')
-    _page_identifier = _logo_image
+    _page_identifier_element = _logo_image
 
     # endregion
 
     # region private methods
     def _click_on_about_link(self):
-        self.click_element_with_JS(self._welcome_menu_about_link, self._element_wait_timeout)
+        self.click_element_with_JS(self._welcome_menu_about_link)
 
     def _click_on_logout_link(self):
-        self.click_element_with_JS(self._welcome_menu_logout_link, wait=self._element_wait_timeout)
+        self.wait_until_displayed(self._welcome_menu_logout_link)
+        self.click_element_with_JS(self._welcome_menu_logout_link)
 
     # endregion
 
@@ -35,7 +37,7 @@ class Header(BasePage):
 
     def open_welcome_menu(self):
         self.click_element_with_JS(self._welcome_link)
-        self._wait_until_displayed(self._welcome_menu)
+        self.wait_until_displayed(self._welcome_menu)
         return self
 
     def logout(self):

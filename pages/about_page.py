@@ -13,7 +13,7 @@ class AboutPage(BasePage):
     _active_employees_p = (By.CSS_SELECTOR, '#frmSelectEmployees p:nth-of-type(3)')
     _employees_terminated_p = (By.CSS_SELECTOR, '#frmSelectEmployees p:nth-of-type(4)')
 
-    _page_identifier = _modal_container_div
+    _page_identifier_element = _modal_container_div
 
     # endregion
 

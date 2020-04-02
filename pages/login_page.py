@@ -14,7 +14,7 @@ class LoginPage(BasePage):
     _login_form = (By.ID, 'frmLogin')
     _invalid_login_error_message = (By.ID, 'spanMessage')
 
-    _page_identifier = _login_form
+    _page_identifier_element = _login_form
 
     # endregion
 
