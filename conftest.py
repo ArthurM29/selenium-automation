@@ -165,7 +165,10 @@ def pytest_runtest_makereport(item):
 
 
 def _capture_screenshot(name):
-    driver_.get_screenshot_as_file(name)
+    try:   # if running a test without starting browser, this fails
+        driver_.get_screenshot_as_file(name)
+    except NameError as e:
+        print(e)
 
 
 # endregion

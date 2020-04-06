@@ -1,5 +1,6 @@
 from pytest import mark as m
 from common.data.credentials import get_credentials
+import pytest_check as check
 
 
 # pytest --it tests/login_test.py --html=results/report.html --headless --browser=firefox
@@ -11,7 +12,9 @@ class TestLogin:
     @m.it("Verify able to login with valid credentials")
     def test_valid_login(self, login_page):
         dashboard = login_page.login(*get_credentials(('valid_credentials')))
-        assert dashboard.get_title() == 'Dashboard'
+        #TODO  INFO: multiple assertions with
+        check.equal(dashboard.get_url(), 'https://opensource-demo.orangehrmlive.com/index.php/dashboard')
+        check.equal(dashboard.get_title(), 'Dashboard')
 
     @m.it("Verify error message is displayed if trying to login with empty username")
     def test_login_with_empty_username(self, login_page):
