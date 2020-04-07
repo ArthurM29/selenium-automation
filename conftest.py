@@ -6,12 +6,12 @@ import os
 from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+
+from common.custom_logger.custom_logger import load_logging_config
 from common.data.credentials import get_credentials
 from common.config.config import Config
-# from pages.admin.user_management_page import UserManagementPage
-# from pages.menu.firstlevelmenu import FirstLevelMenu
+
 
 from pages.login_page import LoginPage
 from pages.header_page import Header
@@ -22,18 +22,9 @@ RESULTS_DIR = ''
 LOGS_DIR = ''
 SCREENSHOTS_DIR = ''
 
-
-# # TODO remove duplicated code for logging
-# timestamp = datetime.now().strftime("%Y.%m.%d.%H.%M.%S")
-# filename = os.path.join(Config().get('results_dir'), f"{timestamp}.log")
-#
-# logger = logging.getLogger(__name__)
-# logger.setLevel(logging.DEBUG)
-# file_handler = logging.FileHandler(filename, mode='a')
-# file_handler.setLevel(logging.DEBUG)
-# formatter = logging.Formatter('')
-# file_handler.setFormatter(formatter)
-# logger.addHandler(file_handler)
+load_logging_config('tests/results/logs')
+empty_logger = logging.getLogger('empty_logger')
+pretty_logger = logging.getLogger('pretty_logger')
 
 
 @pytest.fixture(scope="session")
@@ -43,9 +34,9 @@ def config():
 
 @pytest.fixture(autouse=True)
 def log_test_case(request):
-    # logger.info(f"---  {request.node.cls.__name__}:   {request.node.own_markers[0].args[0]}  ---")
+    empty_logger.info(f"---  {request.node.cls.__name__}:   {request.node.own_markers[0].args[0]}")
     yield
-    # logger.info('')
+    empty_logger.info('')
 
 
 # region command line arguments
@@ -120,12 +111,12 @@ def driver(browser, url, headless, config):
         driver_ = webdriver.Safari()
     driver_.get(url)
     driver_.set_window_size(*config.get('screen_size'))
-    # logger.info("Driver created")
+    pretty_logger.info("Driver created")
 
     yield driver_
 
     driver_.close()
-    # logger.info("Driver closed")
+    pretty_logger.info("Driver closed")
 
 
 # region html report

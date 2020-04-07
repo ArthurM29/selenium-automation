@@ -1,6 +1,4 @@
 import logging
-import os
-from datetime import datetime
 
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
@@ -19,18 +17,7 @@ class BasePage:
     _page_load_timeout = Config().get('page_load_timeout')
     _element_wait_timeout = Config().get('element_wait_timeout')
 
-    # # TODO remove duplicated code for logging
-    # timestamp = datetime.now().strftime("%Y.%m.%d.%H.%M.%S")
-    # filename = os.path.join(Config().get('results_dir'),  f"{timestamp}.log")
-    #
-    # logger = logging.getLogger(__name__)
-    # logger.setLevel(logging.DEBUG)
-    # file_handler = logging.FileHandler(filename, mode='a')
-    # file_handler.setLevel(logging.DEBUG)
-    # formatter = logging.Formatter('')
-    # file_handler.setFormatter(formatter)
-    # logger.addHandler(file_handler)
-    # log = logger
+    log = logging.getLogger('pretty_logger')
 
     def __init__(self, driver):
         self.driver = driver
@@ -102,39 +89,39 @@ class BasePage:
     def get_element(self, locator):
         try:
             element = self.driver.find_element(*locator)
-            print(f"{self.__class__.__name__} page: Element with locator {locator} was found.")
+            print(f"{self.__class__.__name__}: Element with locator {locator} was found.")
             return element
         except NoSuchElementException as e:
-            print(f"{self.__class__.__name__} page: Element with locator {locator} was not found.")
+            print(f"{self.__class__.__name__}: Element with locator {locator} was not found.")
             raise e
 
     def enter_text(self, locator, text):
         self.get_element(locator).send_keys(text)
-        # self.log.info(f"{self.__class__.__name__} page: Entered text '{text}' into element with locator {locator}.")
+        self.log.info(f"{self.__class__.__name__}: Entered text '{text}' into element with locator {locator}.")
 
     def click_element(self, locator):
         self.get_element(locator).click()
-        # self.log.info(f"{self.__class__.__name__} page: Clicked on element with locator {locator}.")
+        self.log.info(f"{self.__class__.__name__}: Clicked on element with locator {locator}.")
 
     def click_element_with_JS(self, locator):
         element = self.get_element(locator)
         self.driver.execute_script("arguments[0].click();", element)
-        # self.log.info(f"{self.__class__.__name__} page: Clicked with JS on element with locator {locator}.")
+        self.log.info(f"{self.__class__.__name__}: Clicked with JS on element with locator {locator}.")
 
     def get_text(self, locator):
         element_text = self.get_element(locator).text
-        # self.log.info(f"{self.__class__.__name__} page: Element with locator {locator} has text '{element_text}'.")
+        self.log.info(f"{self.__class__.__name__}: Element with locator {locator} has text '{element_text}'.")
         return element_text
 
     def get_element_attribute(self, locator, attribute):
         element_attr = self.get_element(locator).get_attribute(attribute)
-        # self.log.info(
-        #     f"{self.__class__.__name__} page: Element with locator {locator} has attribute '{attribute}' with value '{element_attr}'.")
+        self.log.info(
+            f"{self.__class__.__name__}: Element with locator {locator} has attribute '{attribute}' with value '{element_attr}'.")
         return element_attr
 
     def get_element_value(self, locator):
         element_value = self.get_element(locator).get_attribute('value')
-        # self.log.info(f"{self.__class__.__name__} page: Element with locator {locator} has value '{element_value}'.")
+        self.log.info(f"{self.__class__.__name__}: Element with locator {locator} has value '{element_value}'.")
         return element_value
 
     def switch_to_new_tab(self):
