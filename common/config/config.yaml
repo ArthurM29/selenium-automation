@@ -18,4 +18,8 @@ supported_browsers:
 
 page_load_timeout: 20
 element_wait_timeout: 10
+
+# execution results
 results_dir: results
+screenshots_dir: screenshots
+logs_dir: logs

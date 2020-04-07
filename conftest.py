@@ -18,21 +18,22 @@ from pages.header_page import Header
 from datetime import datetime
 from py.xml import html
 
-# TODO find a better way to store results/screenshots/logs directories, consider also getting them from cmd
-RESULTS_DIR = 'results'
-SCREENSHOTS_DIR = 'screenshots'
+RESULTS_DIR = ''
+LOGS_DIR = ''
+SCREENSHOTS_DIR = ''
 
-# TODO remove duplicated code for logging
-timestamp = datetime.now().strftime("%Y.%m.%d.%H.%M.%S")
-filename = os.path.join(Config().get('results_dir'), f"{timestamp}.log")
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-file_handler = logging.FileHandler(filename, mode='a')
-file_handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('')
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
+# # TODO remove duplicated code for logging
+# timestamp = datetime.now().strftime("%Y.%m.%d.%H.%M.%S")
+# filename = os.path.join(Config().get('results_dir'), f"{timestamp}.log")
+#
+# logger = logging.getLogger(__name__)
+# logger.setLevel(logging.DEBUG)
+# file_handler = logging.FileHandler(filename, mode='a')
+# file_handler.setLevel(logging.DEBUG)
+# formatter = logging.Formatter('')
+# file_handler.setFormatter(formatter)
+# logger.addHandler(file_handler)
 
 
 @pytest.fixture(scope="session")
@@ -42,9 +43,9 @@ def config():
 
 @pytest.fixture(autouse=True)
 def log_test_case(request):
-    logger.info(f"---  {request.node.cls.__name__}:   {request.node.own_markers[0].args[0]}  ---")
+    # logger.info(f"---  {request.node.cls.__name__}:   {request.node.own_markers[0].args[0]}  ---")
     yield
-    logger.info('')
+    # logger.info('')
 
 
 # region command line arguments
@@ -55,6 +56,7 @@ def pytest_addoption(parser):
     parser.addoption("--headless", action='store_true',
                      help="browser execution mode - return True if passed and False if not")
     parser.addoption("--env", type=str.lower, help="environment to run the tests against")
+    parser.addoption("--results", type=str.lower, help="directory to store execution report, screenshots, logs")
 
 
 @pytest.fixture(scope="session")
@@ -85,6 +87,22 @@ def env(request, config):
     return cmd_env if cmd_env else config.get('env')
 
 
+@pytest.fixture(scope="session")
+def results_dir(request, config):
+    results_folder = request.config.getoption("--results")
+    return results_folder if results_folder else config.get('results_dir')
+
+
+@pytest.fixture(scope="session", autouse=True)
+def create_results_dirs(results_dir):
+    global RESULTS_DIR, SCREENSHOTS_DIR, LOGS_DIR
+    RESULTS_DIR = results_dir
+    SCREENSHOTS_DIR = Config().get('screenshots_dir')
+    LOGS_DIR = Config().get('logs_dir')
+    Path(os.path.join(results_dir, SCREENSHOTS_DIR)).mkdir(parents=True, exist_ok=True)
+    Path(os.path.join(results_dir, LOGS_DIR)).mkdir(parents=True, exist_ok=True)
+
+
 # endregion
 
 @pytest.fixture()
@@ -102,18 +120,16 @@ def driver(browser, url, headless, config):
         driver_ = webdriver.Safari()
     driver_.get(url)
     driver_.set_window_size(*config.get('screen_size'))
-    logger.info("Driver created")
+    # logger.info("Driver created")
 
     yield driver_
 
     driver_.close()
-    logger.info("Driver closed")
+    # logger.info("Driver closed")
 
 
 # region html report
 # source: http://www.automationtesting.co.in/2017/02/pytest-with-selenium-html-report-with.html
-def _create_results_dir():
-    Path(os.path.join(RESULTS_DIR, SCREENSHOTS_DIR)).mkdir(parents=True, exist_ok=True)
 
 
 def _reorder_columns(cells):
@@ -141,7 +157,6 @@ def pytest_runtest_makereport(item):
     Extends the PyTest Plugin to take and embed screenshot in html report, whenever test fails.
     :param item:
     """
-    _create_results_dir()
     pytest_html = item.config.pluginmanager.getplugin('html')
     outcome = yield
     report = outcome.get_result()
@@ -165,7 +180,7 @@ def pytest_runtest_makereport(item):
 
 
 def _capture_screenshot(name):
-    try:   # if running a test without starting browser, this fails
+    try:  # if running a test without starting browser, this fails
         driver_.get_screenshot_as_file(name)
     except NameError as e:
         print(e)
