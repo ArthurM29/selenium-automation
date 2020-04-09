@@ -13,5 +13,5 @@ Version: ChromeDriver 81.0.4044.20
 
 ## Firefox
 
-Source: https://github.com/mozilla/geckodriver/releases/tag/v0.25.0  
+Source: https://github.com/mozilla/geckodriver/releases/tag/v0.26.0  
 Version: Geckodriver v0.26.0  

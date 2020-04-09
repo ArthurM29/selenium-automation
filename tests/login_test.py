@@ -3,7 +3,7 @@ from common.data.credentials import get_credentials
 import pytest_check as check
 
 
-# pytest --it tests/login_test.py --html=results/report.html --headless --browser=firefox
+# pytest --it tests/login_test.py --html=tests/results/report.html --headless
 
 
 @m.describe("Login")

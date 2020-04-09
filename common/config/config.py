@@ -2,7 +2,8 @@ import yaml
 
 
 class Config:
-    CONFIG_PATH = 'common/config/config.yaml'
+    #TODO change hard coded path
+    CONFIG_PATH = '/Users/amanasyan/PycharmProjects/selenium-automation/common/config/config.yaml'
 
     def __init__(self):
         with open(self.CONFIG_PATH, 'r') as yaml_file:

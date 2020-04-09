@@ -6,7 +6,8 @@ import yaml
 
 
 def load_logging_config(logs_dir):
-    path = 'common/custom_logger/logging.yaml'
+    #TODO fix hard-coded path
+    path = '/Users/amanasyan/PycharmProjects/selenium-automation/common/custom_logger/logging.yaml'
     try:
         with open(path, 'rt') as f:
             timestamp = datetime.now().strftime("%d.%m.%Y.%H.%M.%S")
