@@ -28,19 +28,24 @@ class BasePage:
             self._is_page_identifier_element_displayed()
             self._is_document_in_ready_state()
         except TimeoutException:
-            raise PageNotLoadedException(f"'{self.__class__.__name__}' was not loaded.")
+            message = f"{self.__class__.__name__} was not loaded."
+            self.log.exception(message)
+            # TODO this exception is not captured in logs
+            raise PageNotLoadedException(message)
 
     def _is_page_identifier_element_displayed(self):
         """Wait until self._page_identifier element is displayed"""
         try:
             self.wait_until(EC.visibility_of_element_located(self._page_identifier_element),
                             timeout=self._element_wait_timeout)
+            self.log.info(f"{self.__class__.__name__}: Page identifier {self._page_identifier_element} was displayed.")
         except TimeoutException:
             raise TimeoutException(
                 f"'{self.__class__.__name__}': Page identifier element {self._page_identifier_element} was not visible during {self._element_wait_timeout} seconds.")
 
     def _is_document_in_ready_state(self):
         self.wait_until(document_has_ready_state())
+        self.log.info(f"{self.__class__.__name__}: Document was in ready state.")
 
     def is_loaded(self):
         # TODO raises NoSuchElementException when cannot find element, should I handle and return False for not displayed - that may hide the fact that elemetn is not present
@@ -89,11 +94,11 @@ class BasePage:
     def get_element(self, locator):
         try:
             element = self.driver.find_element(*locator)
-            print(f"{self.__class__.__name__}: Element with locator {locator} was found.")
+            self.log.info(f"{self.__class__.__name__}: Element with locator {locator} was found.")
             return element
-        except NoSuchElementException as e:
-            print(f"{self.__class__.__name__}: Element with locator {locator} was not found.")
-            raise e
+        except NoSuchElementException:
+            self.log.exception(f"{self.__class__.__name__}: Element with locator {locator} was not found.")
+            raise
 
     def enter_text(self, locator, text):
         self.get_element(locator).send_keys(text)
@@ -127,8 +132,10 @@ class BasePage:
     def switch_to_new_tab(self):
         new_opened_tab_handle = self.driver.window_handles[1]
         self.driver.switch_to.window(new_opened_tab_handle)
+        self.log.info(f"{self.__class__.__name__}: Switched to new tab with handle {new_opened_tab_handle}.")
 
     def select_dropdown_option(self, locator, option_name):
         Select(self.get_element(locator)).select_by_visible_text(option_name)
+        self.log.info(f"{self.__class__.__name__}: Selected drop-down option '{option_name}'.")
 
     # endregion

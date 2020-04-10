@@ -33,7 +33,6 @@ def create_results_dirs(config):
 empty_logger = logging.getLogger('empty_logger')
 pretty_logger = logging.getLogger('pretty_logger')
 
-
 @pytest.fixture(scope="session")
 def config():
     return Config()
@@ -103,12 +102,12 @@ def driver(browser, url, headless, config):
         driver_ = webdriver.Safari()
     driver_.get(url)
     driver_.set_window_size(*config.get('screen_size'))
-    pretty_logger.info("Driver created")
+    pretty_logger.info(f"Driver created: '{driver_.name}', capabilities: {driver_.capabilities}")
 
     yield driver_
 
     driver_.close()
-    pretty_logger.info("Driver closed")
+    pretty_logger.info(f"Driver closed: '{driver_.name}'")
 
 
 # region html report
