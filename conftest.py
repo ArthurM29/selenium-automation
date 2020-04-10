@@ -143,7 +143,7 @@ def pytest_runtest_makereport(item):
     outcome = yield
     report = outcome.get_result()
     extra = getattr(report, 'extra', [])
-    report.description = item.own_markers[0].args  # description in 'it' marker
+    report.description = item.own_markers[0].args[0]  # description in 'it' marker
 
     if report.when == 'call' or report.when == "setup":
 
