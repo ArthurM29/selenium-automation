@@ -21,5 +21,5 @@ element_wait_timeout: 10
 
 # execution results
 results_dir: tests/results
-screenshots_dir: screenshots
-logs_dir: logs
+screenshots_dir: tests/results/screenshots
+logs_dir: tests/results/logs

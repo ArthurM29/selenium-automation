@@ -8,21 +8,28 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
-from common.custom_logger.custom_logger import load_logging_config
+from common.logger.custom_logger import load_logging_config
 from common.data.credentials import get_credentials
 from common.config.config import Config
-
 
 from pages.login_page import LoginPage
 from pages.header_page import Header
 from datetime import datetime
 from py.xml import html
 
-RESULTS_DIR = ''
-LOGS_DIR = ''
-SCREENSHOTS_DIR = ''
+RESULTS_DIR = Config().get('results_dir')
+SCREENSHOTS_DIR = Config().get('screenshots_dir')
+LOGS_DIR = Config().get('logs_dir')
 
-load_logging_config('tests/results/logs')
+
+@pytest.fixture(scope="session", autouse=True)
+def create_results_dirs(config):
+    Path(RESULTS_DIR).mkdir(parents=True, exist_ok=True)
+    Path(SCREENSHOTS_DIR).mkdir(parents=True, exist_ok=True)
+    Path(LOGS_DIR).mkdir(parents=True, exist_ok=True)
+    load_logging_config()
+
+
 empty_logger = logging.getLogger('empty_logger')
 pretty_logger = logging.getLogger('pretty_logger')
 
@@ -78,22 +85,6 @@ def env(request, config):
     return cmd_env if cmd_env else config.get('env')
 
 
-@pytest.fixture(scope="session")
-def results_dir(request, config):
-    results_folder = request.config.getoption("--results")
-    return results_folder if results_folder else config.get('results_dir')
-
-
-@pytest.fixture(scope="session", autouse=True)
-def create_results_dirs(results_dir):
-    global RESULTS_DIR, SCREENSHOTS_DIR, LOGS_DIR
-    RESULTS_DIR = results_dir
-    SCREENSHOTS_DIR = Config().get('screenshots_dir')
-    LOGS_DIR = Config().get('logs_dir')
-    Path(os.path.join(results_dir, SCREENSHOTS_DIR)).mkdir(parents=True, exist_ok=True)
-    Path(os.path.join(results_dir, LOGS_DIR)).mkdir(parents=True, exist_ok=True)
-
-
 # endregion
 
 @pytest.fixture()
@@ -104,9 +95,10 @@ def driver(browser, url, headless, config):
         options.headless = True if headless else False
         driver_ = webdriver.Chrome(options=options)
     elif browser == 'firefox':
+        log_path = os.path.join(LOGS_DIR, 'geckodriver.log')
         options = FirefoxOptions()
         options.headless = True if headless else False
-        driver_ = webdriver.Firefox(options=options)
+        driver_ = webdriver.Firefox(options=options, service_log_path=log_path)
     elif browser == 'safari':
         driver_ = webdriver.Safari()
     driver_.get(url)
@@ -152,20 +144,19 @@ def pytest_runtest_makereport(item):
     outcome = yield
     report = outcome.get_result()
     extra = getattr(report, 'extra', [])
-
-    test_description, = item.own_markers[0].args
-    report.description = test_description
+    report.description = item.own_markers[0].args  # description in 'it' marker
 
     if report.when == 'call' or report.when == "setup":
 
         xfail = hasattr(report, 'wasxfail')
         if (report.skipped and xfail) or (report.failed and not xfail):
-            file_path_in_report = os.path.join(SCREENSHOTS_DIR, f"{report.head_line.replace('.', '-')}.png")
-            file_path = os.path.join(RESULTS_DIR, file_path_in_report)
-            _capture_screenshot(file_path)
-            if file_path_in_report:
+            screenshot_path = os.path.join(SCREENSHOTS_DIR, f"{report.head_line.replace('.', '-')}.png")
+            screenshots_folder, filename = screenshot_path.split('/')[-2:]  # last 2 elements
+            screenshot_path_in_report = os.path.join(screenshots_folder, filename)
+            _capture_screenshot(screenshot_path)
+            if screenshot_path_in_report:
                 html = '<div><img src="%s" alt="screenshot" style="width:304px;height:228px;" ' \
-                       'onclick="window.open(this.src)" align="right"/></div>' % file_path_in_report
+                       'onclick="window.open(this.src)" align="right"/></div>' % screenshot_path_in_report
                 extra.append(pytest_html.extras.html(html))
         report.extra = extra
 
