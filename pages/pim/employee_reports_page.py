@@ -1,0 +1,2 @@
+class EmployeeReportsPage:
+    pass

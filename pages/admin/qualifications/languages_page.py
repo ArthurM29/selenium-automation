@@ -1,0 +1,2 @@
+class LanguagesPage:
+    pass

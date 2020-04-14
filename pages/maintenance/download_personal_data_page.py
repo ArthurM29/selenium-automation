@@ -1,0 +1,2 @@
+class DownloadPersonalDataPage:
+    pass

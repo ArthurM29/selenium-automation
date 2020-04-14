@@ -1,0 +1,2 @@
+class VacanciesPage:
+    pass

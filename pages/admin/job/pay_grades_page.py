@@ -1,0 +1,2 @@
+class PayGradesPage:
+    pass

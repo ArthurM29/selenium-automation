@@ -1,0 +1,2 @@
+class EmailConfigurationPage:
+    pass

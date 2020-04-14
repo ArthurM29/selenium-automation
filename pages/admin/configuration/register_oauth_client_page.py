@@ -1,0 +1,2 @@
+class RegisterOAuthClientPage:
+    pass

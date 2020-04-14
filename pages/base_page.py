@@ -1,6 +1,8 @@
+import inspect
 import logging
 
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.webdriver import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from common.exceptions import PageNotLoadedException, ElementNotDisplayedException, ElementNotClickableException
@@ -22,6 +24,13 @@ class BasePage:
     def __init__(self, driver):
         self.driver = driver
         self.verify_page_is_loaded()
+
+    # add logging to all methods
+    # def __getattribute__(self, name):
+    #     returned = object.__getattribute__(self, name)
+    #     if inspect.isfunction(returned) or inspect.ismethod(returned):
+    #         self.log.info(f"{self.__class__.__name__}: called {returned.__name__}")
+    #     return returned
 
     def verify_page_is_loaded(self):
         try:
@@ -137,5 +146,10 @@ class BasePage:
     def select_dropdown_option(self, locator, option_name):
         Select(self.get_element(locator)).select_by_visible_text(option_name)
         self.log.info(f"{self.__class__.__name__}: Selected drop-down option '{option_name}'.")
+
+    def mouse_over(self, locator):
+        element = self.get_element(locator)
+        ActionChains(self.driver).move_to_element(element).perform()
+        self.log.info(f"{self.__class__.__name__}: Hovered moused over element with locator '{locator}'.")
 
     # endregion

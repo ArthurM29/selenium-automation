@@ -1,0 +1,2 @@
+class WorkShiftsPage:
+    pass

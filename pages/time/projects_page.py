@@ -1,0 +1,2 @@
+class ProjectsPage:
+    pass

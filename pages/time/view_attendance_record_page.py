@@ -1,0 +1,2 @@
+class ViewAttendanceRecordPage:
+    pass

@@ -1,0 +1,2 @@
+class AttendanceSummaryPage:
+    pass

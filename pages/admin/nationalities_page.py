@@ -1,0 +1,2 @@
+class NationalitiesPage:
+    pass
