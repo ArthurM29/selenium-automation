@@ -1,7 +1,7 @@
 from pages.admin.nationalities_page import NationalitiesPage
 from pages.pim.employee_list_page import EmployeeListPage
 from pages.leave.assign_leave_page import AssignLeavePage
-from pages.leave.time_menu_items import TimesheetsMenu, AttendanceMenu, TimeReportsMenu, ProjectInfoMenu
+from pages.menu.time_menu_items import TimesheetsMenu, AttendanceMenu, TimeReportsMenu, ProjectInfoMenu
 from pages.leave.leave_list_page import LeaveListPage
 from pages.maintenance.download_personal_data_page import DownloadPersonalDataPage
 from pages.menu.admin_menu_items import *

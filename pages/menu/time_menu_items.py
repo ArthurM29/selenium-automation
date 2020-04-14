@@ -1,6 +1,5 @@
 from selenium.webdriver.common.by import By
 
-from pages.leave.leave_entitlements_page import LeaveEntitlementsMPage
 from pages.leave.timesheets_page import TimesheetsPage
 from pages.menu.base_menu import BaseMenu, MenuItem
 from pages.time.attendance_configuraton_page import AttendanceConfigurationPage
