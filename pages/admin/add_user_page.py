@@ -27,7 +27,7 @@ class AddUserPage(BasePage):
         self.enter_text(self._employee_name_input, name)
 
     def _enter_username(self, username):
-        self.enter_text(self._username_input, username, wait=5)
+        self.enter_text(self._username_input, username)
 
     def _select_status(self, option_name):
         self.select_dropdown_option(self._status_dropdown, option_name)
@@ -39,7 +39,7 @@ class AddUserPage(BasePage):
         self.enter_text(self._confirm_password_input, password)
 
     def _click_save_button(self):
-        self.click_element(self._save_button)
+        self.click_element_with_JS(self._save_button)
         from pages.admin.user_management_page import UserManagementPage
         return UserManagementPage(self.driver)
 
@@ -53,6 +53,6 @@ class AddUserPage(BasePage):
         self._select_status(user.status)
         self._enter_password(user.password)
         self._enter_confirm_password(user.confirm_password)
-
+        self._click_save_button()
 
     # endregion

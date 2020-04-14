@@ -6,10 +6,10 @@ from pages.base_page import BasePage
 class UserManagementPage(BasePage):
     # region locators
 
-    _user_table = (By.ID, 'resultTable')
+    _users_table = (By.ID, 'resultTable')
     _add_button = (By.ID, 'btnAdd')
 
-    _page_identifier_element = _user_table
+    _page_identifier_element = _users_table
 
     # endregion
 

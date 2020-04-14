@@ -11,11 +11,14 @@ from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from common.logger.custom_logger import load_logging_config
 from common.data.credentials import get_credentials
 from common.config.config import Config
+from models.user import User
 
 from pages.login_page import LoginPage
 from pages.header_page import Header
 from datetime import datetime
 from py.xml import html
+
+from pages.menu.main_menu import MainMenu
 
 RESULTS_DIR = Config().get('results_dir')
 SCREENSHOTS_DIR = Config().get('screenshots_dir')
@@ -32,6 +35,7 @@ def create_results_dirs(config):
 
 empty_logger = logging.getLogger('empty_logger')
 pretty_logger = logging.getLogger('pretty_logger')
+
 
 @pytest.fixture(scope="session")
 def config():
@@ -171,6 +175,11 @@ def _capture_screenshot(name):
 
 # region page fixtures
 @pytest.fixture()
+def user():
+    return User()
+
+
+@pytest.fixture()
 def login_page(driver):
     return LoginPage(driver)
 
@@ -191,15 +200,12 @@ def about_modal(driver):
     about_modal = header_page.open_about_modal()
     return about_modal
 
-# @pytest.fixture()
-# def user_management(driver, header_page):
-#     # TODO replace with proper page objects for menu navigation
-#     menu = FirstLevelMenu(header_page.driver)
-#     menu.select_menu_item('Admin')
-#     menu.click_element((By.ID, 'menu_admin_UserManagement'))
-#
-#     user_management_page = UserManagementPage(menu.driver)
-#
-#     return user_management_page
+
+@pytest.fixture()
+def user_management_page(header_page):
+    menu = MainMenu(header_page.driver)
+    menu.hover_on('Admin').hover_on('Organization').hover_on('Structure')
+    user_management_page = menu.select('Admin')
+    return user_management_page
 
 # endregion

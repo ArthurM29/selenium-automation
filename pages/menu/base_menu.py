@@ -26,6 +26,7 @@ class BaseMenu(BasePage):
     def hover_on(self, name):
         menu_item = self._get_menu_item(name)
         self.mouse_over(menu_item.locator)
+        self.log.info(f"{self.__class__.__name__}: Hovered over menu item '{name}'.")
         new_menu_class = menu_item.hover_dest
         if new_menu_class:
             return new_menu_class(self.driver)
@@ -34,6 +35,7 @@ class BaseMenu(BasePage):
     def select(self, name):
         menu_item = self._get_menu_item(name)
         self.click_element_with_JS(menu_item.locator)
+        self.log.info(f"{self.__class__.__name__}: Selected menu item '{name}'.")
         new_page_class = menu_item.select_dest
         if new_page_class:
             return new_page_class(self.driver)
