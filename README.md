@@ -15,3 +15,12 @@ Version: ChromeDriver 81.0.4044.20
 
 Source: https://github.com/mozilla/geckodriver/releases/tag/v0.26.0  
 Version: Geckodriver v0.26.0  
+
+
+##Setup venv and install requirement
+
+python3 -m venv venv 
+
+source venv/bin/activate
+
+pip install -r requirements.txt
