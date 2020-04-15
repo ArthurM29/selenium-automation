@@ -1,2 +1,30 @@
 ESS - Employee self-service
 PIM - Personnel Information Management
+
+
+Smoke test - scenarios that should always work
+
+
+1) Admin is able to create a new user
+ - admin creates a new user
+ - user is able to login
+ - user is able to logout
+
+2) Employee is able to edit personal information
+
+3) Employee is able to fill in timesheet
+
+4) Employee is able to submit an leave request and see her leaves
+
+5) Employee is able to find other employee in Directory
+
+more...
+
+
+
+*** Questions ***
+
+we have 2 user types: Admin and Employee, Menu and UI pages are different for these roles, how to handle these ? Have a base page class with common elements
+and inherit like AdminDashboard and EmployeeDashboard or have one big class with everything and use whenever you need what ?
+
+seconds approach might have issues if same element behaves differently, e.g. same button opens different pages/forms, which may happen realistically.
