@@ -11,7 +11,7 @@
 - Configurability
 
 
-##How to run
+## How to run
 1. cd to root folder
 2. run command: pytest tests
 
@@ -19,23 +19,23 @@
 # Versions
 
 
-##Selenium 
+## Selenium 
   
 Version: 3.141.0
 
 
-##Chrome 
+## Chrome 
 
 Source: https://chromedriver.chromium.org/  
 Version: ChromeDriver v85.0.4183.87
 
-##Firefox
+## Firefox
 
 Source: https://github.com/mozilla/geckodriver/releases/tag/v0.27.0  
 Version: Geckodriver v0.27.0  
 
 
-##Setup venv and install requirement
+## Setup venv and install requirement
 
 python3 -m venv venv 
 
