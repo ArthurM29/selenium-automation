@@ -1,4 +1,3 @@
-import inspect
 import logging
 
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
@@ -57,7 +56,7 @@ class BasePage:
         self.log.info(f"{self.__class__.__name__}: Document was in ready state.")
 
     def is_loaded(self):
-        # TODO raises NoSuchElementException when cannot find element, should I handle and return False for not displayed - that may hide the fact that elemetn is not present
+        # TODO raises NoSuchElementException when cannot find element, should I handle and return False for not displayed - that may hide the fact that element is not present
         return self.driver.find_element(*self._page_identifier_element).is_displayed()
 
     def is_not_loaded(self):

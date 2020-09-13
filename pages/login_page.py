@@ -26,7 +26,7 @@ class LoginPage(BasePage):
         self.enter_text(self._password_input, password)
 
     def _click_login_button(self):
-        self.click_element_with_JS(self._login_button)
+        self.click_element(self._login_button)
 
     # endregion
 

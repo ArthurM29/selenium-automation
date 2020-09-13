@@ -1,5 +1,4 @@
 from pytest import mark as m
-import time
 
 from common.data.credentials import get_credentials
 from pages.header_page import Header
@@ -20,7 +19,7 @@ class TestHeader:
 
     @m.it("Verify welcome text is displayed with logged in username")
     def test_welcome_text_is_displayed(self, login_page):
-        username, password = get_credentials(('valid_credentials'))
+        username, password = get_credentials('valid_credentials')
         login_page.login(username, password)
         header_page = Header(login_page.driver)  # TODO how can I get this from fixture and avoid creating in tests ?
         assert header_page.get_welcome_text() == f"Welcome {username}"

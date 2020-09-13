@@ -4,6 +4,7 @@ import pytest_check as check
 
 
 # pytest --it tests/login_test.py --html=tests/results/report.html --headless
+# short command: pytest tests/login_test.py
 
 
 @m.describe("Login")
@@ -14,7 +15,7 @@ class TestLogin:
         dashboard = login_page.login(*get_credentials(('valid_credentials')))
         #TODO  INFO: multiple assertions with
         check.equal(dashboard.get_url(), 'https://opensource-demo.orangehrmlive.com/index.php/dashboard')
-        check.equal(dashboard.get_title(), 'Dashboard ')
+        check.equal(dashboard.get_title(), 'Dashboard')
 
     @m.it("Verify error message is displayed if trying to login with empty username")
     def test_login_with_empty_username(self, login_page):
